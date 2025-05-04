@@ -1,0 +1,39 @@
+
+def find_parent(parent, node):
+    if parent[node] != node:
+        parent[node] = find_parent(parent, parent[node])
+    return parent[node]
+
+
+def union(parent, u, v):
+    root_u = find_parent(parent, u)
+    root_v = find_parent(parent, v)
+    if root_u != root_v:
+        parent[root_v] = root_u
+
+def kruskal(vertices, edges):
+    edges.sort(key=lambda x: x[2])  
+
+    parent = {v: v for v in vertices}
+    mst = []
+
+    for u, v, weight in edges:
+        if find_parent(parent, u) != find_parent(parent, v):
+            mst.append((u, v, weight))
+            union(parent, u, v)
+
+    return mst
+
+vertices = ['A', 'B', 'C', 'D']
+edges = [
+    ('A', 'B', 1),
+    ('A', 'C', 3),
+    ('B', 'D', 4),
+    ('C', 'D', 2)
+]
+
+mst = kruskal(vertices, edges)
+
+print("Minimum Spanning Tree:")
+for u, v, weight in mst:
+    print(f"{u} -- {v} == {weight}")

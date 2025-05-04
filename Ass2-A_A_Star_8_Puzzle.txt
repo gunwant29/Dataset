@@ -1,0 +1,53 @@
+from collections import deque
+
+goal = (1, 2, 3, 4, 5, 6, 7, 8, 0)
+
+def get_neighbors(state):
+    neighbors = []
+    i = state.index(0)
+    x, y = divmod(i, 3)
+
+    moves = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    for dx, dy in moves:
+        nx, ny = x + dx, y + dy
+        if 0 <= nx < 3 and 0 <= ny < 3:
+            ni = nx * 3 + ny
+            new_state = list(state)
+            new_state[i], new_state[ni] = new_state[ni], new_state[i]
+            neighbors.append(tuple(new_state))
+    return neighbors
+
+def bfs(start):
+    queue = deque([(start, [start])])
+    visited = set()
+
+    while queue:
+        state, path = queue.popleft()
+        if state == goal:
+            return path
+
+        if state in visited:
+            continue
+        visited.add(state)
+
+        for neighbor in get_neighbors(state):
+            if neighbor not in visited:
+                queue.append((neighbor, path + [neighbor]))
+    
+    return None
+
+start_state = (1, 2, 3,
+               4, 0, 6,
+               7, 5, 8)
+
+# Run BFS
+solution = bfs(start_state)
+if solution:
+    print("Steps to solve:", len(solution) - 1)
+    for state in solution:
+        print(state[:3])
+        print(state[3:6])
+        print(state[6:])
+        print()
+else:
+    print("No solution found.")
